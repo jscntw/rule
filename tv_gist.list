@@ -31,7 +31,10 @@ DOMAIN-SUFFIX,nodeseek.com
 DOMAIN-SUFFIX,srgoideas.com
 DOMAIN-SUFFIX,lite.cn2gias.uk
 DOMAIN-SUFFIX,cn2gias.uk
-
+DOMAIN-SUFFIX,shrekmedia.org
+DOMAIN-SUFFIX,public.shrekmedia.org
+DOMAIN-SUFFIX,okemby.org
+DOMAIN-SUFFIX,link01.okemby.org
 # yaml
 #payload:    # classical
 #    - DOMAIN-KEYWORD,yahoo
@@ -54,6 +57,7 @@ DOMAIN-SUFFIX,cn2gias.uk
 #    - DOMAIN-SUFFIX,xiaoxintv.cc
 #    - DOMAIN-SUFFIX,xiaoxintv.net
 #    - DOMAIN-SUFFIX,sugoideas.com
+
 
 
 
