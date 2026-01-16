@@ -29,6 +29,8 @@ DOMAIN-SUFFIX,skinny.co.nz
 DOMAIN-SUFFIX,arrowos.net
 DOMAIN-SUFFIX,nodeseek.com
 DOMAIN-SUFFIX,srgoideas.com
+DOMAIN-SUFFIX,lite.cn2gias.uk
+DOMAIN-SUFFIX,cn2gias.uk
 
 # yaml
 #payload:    # classical
@@ -52,6 +54,7 @@ DOMAIN-SUFFIX,srgoideas.com
 #    - DOMAIN-SUFFIX,xiaoxintv.cc
 #    - DOMAIN-SUFFIX,xiaoxintv.net
 #    - DOMAIN-SUFFIX,sugoideas.com
+
 
 
 
