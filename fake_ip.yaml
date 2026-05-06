@@ -1,0 +1,6 @@
+payload:
+  - +.msftconnecttest.com
+  - +.msftncsi.com
+  # 注意：DOMAIN-KEYWORD 在 domain 模式下是不支持的
+  # 如果你一定要匹配包含 jscn 关键字的所有域名，
+  # 建议保留一条原先的 classical 规则文件，或者接受 domain 模式只精确匹配。
