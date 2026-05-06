@@ -1,0 +1,12 @@
+# classical_yaml: &classical_yaml {type: http, interval: 86400, behavior: classical, format: yaml}
+payload:
+  - DOMAIN-KEYWORD,lzcdn
+  - DOMAIN-KEYWORD,fengbao
+  
+  - DOMAIN-SUFFIX,misaka.be
+  - DOMAIN-SUFFIX,emby.yun
+  - DOMAIN-SUFFIX,ichinosekotomi.com
+  - DOMAIN-SUFFIX,okemby.org
+  - DOMAIN-SUFFIX,cn2gias.uk
+  - DOMAIN-SUFFIX,shrekmedia.org
+  - DOMAIN-SUFFIX,66990000.xyz

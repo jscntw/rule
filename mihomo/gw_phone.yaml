@@ -1,0 +1,11 @@
+# domain_yaml: &domain_yaml {type: http, interval: 86400, behavior: domain, format: yaml}
+payload:
+  - +.t-mobile.com
+  - +.hostloc.com
+  - +.v2ex.com
+  - +.dmit.io
+  - +.giffgaff.com
+  - +.skinny.co.nz
+  - +.arrowos.net
+  - +.nodeseek.com
+  - +.name.com
