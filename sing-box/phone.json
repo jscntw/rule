@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "rules": [
+    {
+      "domain_suffix": [
+        ".t-mobile.com",
+        ".hostloc.com",
+        ".v2ex.com",
+        ".dmit.io",
+        ".giffgaff.com",
+        ".skinny.co.nz",
+        ".arrowos.net",
+        ".nodeseek.com",
+        ".name.com"
+      ]
+    }
+  ]
+}
