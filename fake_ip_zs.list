@@ -1,8 +1,2 @@
-# 域名关键字匹配
-# DOMAIN-KEYWORD,jscn
-
-# 国外DNS
-DOMAIN-SUFFIX,jscn.net
-DOMAIN-SUFFIX,flfl.eu.org
 DOMAIN-SUFFIX,msftconnecttest.com
 DOMAIN-SUFFIX,msftncsi.com
