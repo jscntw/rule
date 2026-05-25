@@ -2,6 +2,8 @@
 payload:
   - DOMAIN-KEYWORD,lzcdn
   - DOMAIN-KEYWORD,fengbao
+  - DOMAIN-KEYWORD,yzzyvip
+  - DOMAIN-KEYWORD,baofeng
   
   - DOMAIN-SUFFIX,misaka.be
   - DOMAIN-SUFFIX,emby.yun
