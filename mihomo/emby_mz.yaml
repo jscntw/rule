@@ -1,9 +1,9 @@
-# classical_yaml: &classical_yaml {type: http, interval: 86400, behavior: classical, format: yaml}
 payload:
   - DOMAIN-KEYWORD,lzcdn
   - DOMAIN-KEYWORD,fengbao
   - DOMAIN-KEYWORD,yzzyvip
   - DOMAIN-KEYWORD,baofeng
+  - DOMAIN-KEYWORD,xyz
   
   - DOMAIN-SUFFIX,misaka.be
   - DOMAIN-SUFFIX,emby.yun
@@ -15,3 +15,4 @@ payload:
   - DOMAIN-SUFFIX,us.ci
   - DOMAIN-SUFFIX,eu.org
   - DOMAIN-SUFFIX,lunarisvault.com
+  - DOMAIN-SUFFIX,111848.xyz
