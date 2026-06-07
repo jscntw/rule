@@ -1,0 +1,123 @@
+{
+  "log": {
+    "disabled": false,
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "fakeip": {
+      "enabled": true,
+      "inet4_range": "198.18.0.0/15",
+      "inet6_range": "fc00::/18"
+    },
+    "servers": [
+      { "tag": "chrdns", "address": "https://8.8.8.8/dns-query", "detour": "🚀 默认代理" },
+      { "tag": "local", "address": "https://223.5.5.5/dns-query", "detour": "direct" },
+      { "tag": "fakeip", "address": "fakeip" }
+    ],
+    "rules": [
+      { "rule_set": "ads-awavenue", "action": "reject" },
+      { "rule_set": "geosite-cn", "action": "route", "server": "local" },
+      { "rule_set": "geosite-!cn", "action": "route", "server": "chrdns" },
+      { "outbound": "any", "action": "route", "server": "local", "disable_cache": true },
+      { "clash_mode": "Direct", "action": "route", "server": "local" },
+      { "clash_mode": "Global", "action": "route", "server": "fakeip" },
+      { "query_type": "HTTPS", "action": "reject" },
+      { "query_type": [ "A", "AAAA" ], "action": "route", "server": "fakeip", "rewrite_ttl": 1 }
+    ],
+    "final": "chrdns",
+    "independent_cache": true
+  },
+  "route": {
+    "rules": [
+      { "rule_set": "ads-awavenue", "action": "reject" },
+      { "protocol": "quic", "action": "reject" }, 
+      { "network": "udp", "port": 443, "action": "reject" },
+      { "action": "sniff", "sniffer": [ "http", "tls", "quic", "dns" ], "timeout": "500ms" },
+      { "type": "logical", "mode": "or", "rules": [ { "port": 53 }, { "protocol": "dns" } ], "action": "hijack-dns" },
+      { "ip_is_private": true, "action": "route", "outbound": "direct" },
+      { "clash_mode": "Global", "action": "route", "outbound": "GLOBAL" },
+      { "clash_mode": "Direct", "action": "route", "outbound": "direct" },
+      { "rule_set": "geosite-!cn", "action": "route", "outbound": "🔰 other" },
+      { "rule_set": "geosite-cn", "action": "route", "outbound": "direct" },
+      { "action": "resolve" },
+      { "rule_set": "geoip-cn", "action": "route", "outbound": "direct" }
+    ],
+    "rule_set": [
+      {
+        "tag": "ads-awavenue",
+        "type": "remote",
+        "format": "source",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Singbox.json",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geoip-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-!cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/geolocation-!cn.srs",
+        "download_detour": "direct"
+      }
+    ],
+    "final": "🔰 other",
+    "auto_detect_interface": true
+  },
+  "outbounds": [
+    { "tag": "🚀 默认代理", "type": "selector", "outbounds": [ "♻️ AT", "📌 MT", "direct" ] },
+    { "tag": "♻️ AT", "type": "selector", "outbounds": [ "all-auto", "us-auto", "jp-auto", "sg-auto", "kr-auto", "tw-auto", "hk-auto" ] },
+    { "tag": "📌 MT", "type": "selector", "outbounds": [ "all", "us", "jp", "sg", "kr", "tw", "hk" ] },
+    { "tag": "🔰 other", "type": "selector", "outbounds": [ "🚀 默认代理", "♻️ AT", "📌 MT" ] },
+    { "tag": "us", "type": "selector", "outbounds": [ "" ] },
+    { "tag": "jp", "type": "selector", "outbounds": [ "" ] },
+    { "tag": "sg", "type": "selector", "outbounds": [ "" ] },
+    { "tag": "kr", "type": "selector", "outbounds": [ "" ] },
+    { "tag": "tw", "type": "selector", "outbounds": [ "" ] },
+    { "tag": "hk", "type": "selector", "outbounds": [ "" ] },
+    { "tag": "us-auto", "type": "urltest", "outbounds": [ "" ], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50 },
+    { "tag": "jp-auto", "type": "urltest", "outbounds": [ "" ], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50 },
+    { "tag": "sg-auto", "type": "urltest", "outbounds": [ "" ], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50 },
+    { "tag": "kr-auto", "type": "urltest", "outbounds": [ "" ], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50 },
+    { "tag": "tw-auto", "type": "urltest", "outbounds": [ "" ], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50 },
+    { "tag": "hk-auto", "type": "urltest", "outbounds": [ "" ], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50 },
+    { "tag": "all", "type": "selector", "outbounds": [ "" ] },
+    { "tag": "all-auto", "type": "urltest", "outbounds": [ "" ], "url": "https://www.gstatic.com/generate_204", "interval": "1m", "tolerance": 50 },
+    { "tag": "GLOBAL", "type": "selector", "outbounds": [ "direct", "🚀 默认代理" ] },
+    { "tag": "direct", "type": "direct" }
+  ],
+  "inbounds": [
+    {
+      "type": "tun",
+      "address": [ "172.19.0.0/30", "fdfe:dcba:9876::0/126" ],
+      "stack": "mixed",
+      "auto_route": true,
+      "platform": { "http_proxy": { "enabled": true, "server": "127.0.0.1", "server_port": 7890 } }
+    },
+    { "type": "mixed", "listen": "127.0.0.1", "listen_port": 7890 }
+  ],
+  "experimental": {
+    "clash_api": {
+      "external_controller": "127.0.0.1:18181",
+      "external_ui": "ui",
+      "external_ui_download_url": "https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "🚀 默认代理"
+    },
+    "cache_file": {
+      "enabled": true,
+      "store_fakeip": true
+    }
+  }
+}
