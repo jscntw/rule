@@ -113,9 +113,9 @@
       {"rule_set": "geoip-cn", "outbound": "direct"}
     ],
     "rule_set": [
-	  {"tag": "emby", "type": "remote", "format": "source", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/zy-gz/main/sing-box/emby.json", "download_detour": "direct"},
-	  {"tag": "phone", "type": "remote", "format": "source", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/zy-gz/main/sing-box/phone.json", "download_detour": "direct"},
-	  {"tag": "fkip", "type": "remote", "format": "source", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/zy-gz/main/sing-box/fakeip.json", "download_detour": "direct"},
+	  {"tag": "emby", "type": "remote", "format": "source", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/rule/main/sing-box/emby.json", "download_detour": "direct"},
+	  {"tag": "phone", "type": "remote", "format": "source", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/rule/main/sing-box/phone.json", "download_detour": "direct"},
+	  {"tag": "fkip", "type": "remote", "format": "source", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/rule/main/sing-box/fakeip.json", "download_detour": "direct"},
       {"tag": "ads-awavenue", "type": "remote", "format": "source", "url": "https://ghfast.top/https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Singbox.json", "download_detour": "direct"},
       {"tag": "geosite-telegram", "type": "remote", "format": "binary", "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/telegram.srs", "download_detour": "direct"},
       {"tag": "geosite-youtube", "type": "remote", "format": "binary", "url": "https://ghfast.top/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/youtube.srs", "download_detour": "direct"},
