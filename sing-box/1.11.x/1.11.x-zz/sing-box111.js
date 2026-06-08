@@ -11,13 +11,13 @@ config.outbounds.push(...proxies);
 
 // 配置区：只需在这里增减地区
 const specialMap = {
-  '美国-落地专机': /美国-落地/i,
-  '日本-落地专机': /日本-落地/i,
-  '新加坡-落地专机': /新加坡-落地/i,
-  'chr-落地专机': /chr-落地/i,
-  '韩国-落地专机': /韩国-落地/i,
-  '台湾-落地专机': /台湾-落地/i,
-  '香港-落地专机': /香港-落地/i
+  '美国-落地': /美国-落地/i,
+  '日本-落地': /日本-落地/i,
+  '新加坡-落地': /新加坡-落地/i,
+  '春川-落地': /春川-落地/i,
+  '韩国-落地': /韩国-落地/i,
+  '台湾-落地': /台湾-落地/i,
+  '香港-落地': /香港-落地/i
 };
 
 const regionMap = {
@@ -39,7 +39,7 @@ config.outbounds.map(i => {
     i.outbounds.push(...getTags(proxies));
   }
 
-  // 落地专机逻辑
+  // 落地逻辑
   if (specialMap[i.tag]) {
     i.outbounds.push(...getTags(proxies, specialMap[i.tag]));
   }
