@@ -16,7 +16,7 @@ let proxies = await produceArtifact({
 
 config.outbounds.push(...proxies);
 
-// 2. 定义排除关键词
+// 2. 定义排除关键词（黑名单）
 const specialMap = {
   '美国-落地': /美国-落地/i,
   '日本-落地': /日本-落地/i,
@@ -40,7 +40,12 @@ const regionConfig = [
   { tags: ['all', 'all-auto'], regex: null }
 ];
 
-// 4. 执行严谨的过滤逻辑
+// 4. 数据预清洗：彻底从候选池中移除所有“落地”节点
+const cleanProxies = proxies.filter(p => 
+  !excludedKeywords.some(keyword => p.tag.includes(keyword))
+);
+
+// 5. 执行分类填充
 config.outbounds.forEach(outbound => {
   if (!outbound.outbounds || !Array.isArray(outbound.outbounds)) return;
   
@@ -50,22 +55,17 @@ config.outbounds.forEach(outbound => {
     outbound.outbounds = []; 
     let matchedTags = [];
     
-    // 过滤函数：检查是否包含排除关键词
-    const isExcluded = (p) => excludedKeywords.some(keyword => p.tag.includes(keyword));
-    
     if (matchConfig.regex === null) {
-      // all 组：直接过滤掉所有排除项
-      matchedTags = proxies
-        .filter(p => !isExcluded(p))
-        .map(p => p.tag);
+      // all 组：直接使用预清洗后的 cleanProxies
+      matchedTags = cleanProxies.map(p => p.tag);
     } else {
-      // 地区组：既要匹配正则，又要排除关键词
-      matchedTags = proxies
-        .filter(p => matchConfig.regex.test(p.tag) && !isExcluded(p))
+      // 地区组：在清洗后的池子里匹配正则
+      matchedTags = cleanProxies
+        .filter(p => matchConfig.regex.test(p.tag))
         .map(p => p.tag);
     }
     
-    // 5. 兜底处理
+    // 6. 兜底处理
     if (matchedTags.length === 0) {
       if (!hasCompatibleAdded) {
         config.outbounds.push(compatible_outbound);
@@ -78,4 +78,5 @@ config.outbounds.forEach(outbound => {
   }
 });
 
+// 7. 输出最终配置
 $content = JSON.stringify(config, null, 2);
