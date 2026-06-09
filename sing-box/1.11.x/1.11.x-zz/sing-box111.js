@@ -16,7 +16,7 @@ let proxies = await produceArtifact({
 
 config.outbounds.push(...proxies);
 
-// 2. 定义排除关键词（黑名单）
+// 2. 定义排除关键词（落地节点黑名单）
 const specialMap = {
   '美国-落地': /美国-落地/i,
   '日本-落地': /日本-落地/i,
@@ -28,25 +28,38 @@ const specialMap = {
 };
 const excludedKeywords = Object.keys(specialMap);
 
-// 3. 定义分组规则
+// 3. 定义分组规则（用于其他常规分组）
 const regionConfig = [
-  { tags: ['hk', 'hk-auto'], regex: /🇭🇰|hk/i },
-  { tags: ['tw', 'tw-auto'], regex: /🇹🇼|tw/i },
-  { tags: ['jp', 'jp-auto'], regex: /🇯🇵|jp/i },
-  { tags: ['sg', 'sg-auto'], regex: /🇸🇬|sg/i },
-  { tags: ['kr', 'kr-auto'], regex: /🇰🇷|kr/i },
-  { tags: ['us', 'us-auto'], regex: /🇺🇲|🇺🇸|us/i },
+  { tags: ['hk', 'hk-auto'], regex: /🇭🇰|港|hk/i },
+  { tags: ['tw', 'tw-auto'], regex: /🇹🇼|台|tw/i },
+  { tags: ['jp', 'jp-auto'], regex: /🇯🇵|日|jp/i },
+  { tags: ['sg', 'sg-auto'], regex: /🇸🇬|新|sg/i },
+  { tags: ['kr', 'kr-auto'], regex: /🇰🇷|韩|kr/i },
+  { tags: ['us', 'us-auto'], regex: /🇺🇲|🇺🇸|美|us/i },
   { tags: ['chr', 'chr-auto'], regex: /🇳🇱/i },
   { tags: ['all', 'all-auto'], regex: null }
 ];
 
-// 4. 数据预清洗：彻底从候选池中移除所有“落地”节点
+// 4.1 核心逻辑：先将“落地”节点精确填充到各自的落地分组中
+Object.keys(specialMap).forEach(groupTag => {
+  const group = config.outbounds.find(o => o.tag === groupTag);
+  if (group) {
+    group.outbounds = proxies
+      .filter(p => specialMap[groupTag].test(p.tag))
+      .map(p => p.tag);
+  }
+});
+
+// 4.2 数据预清洗：为其他分组准备“干净”的节点池（移除所有落地节点）
 const cleanProxies = proxies.filter(p => 
   !excludedKeywords.some(keyword => p.tag.includes(keyword))
 );
 
-// 5. 执行分类填充
+// 5. 执行其他分组（all, us, jp等）的分类填充
 config.outbounds.forEach(outbound => {
+  // 跳过已经处理过的落地分组
+  if (specialMap.hasOwnProperty(outbound.tag)) return;
+  
   if (!outbound.outbounds || !Array.isArray(outbound.outbounds)) return;
   
   const matchConfig = regionConfig.find(conf => conf.tags.includes(outbound.tag));
@@ -56,7 +69,7 @@ config.outbounds.forEach(outbound => {
     let matchedTags = [];
     
     if (matchConfig.regex === null) {
-      // all 组：直接使用预清洗后的 cleanProxies
+      // all 组：直接使用清洗后的节点池
       matchedTags = cleanProxies.map(p => p.tag);
     } else {
       // 地区组：在清洗后的池子里匹配正则
@@ -65,7 +78,7 @@ config.outbounds.forEach(outbound => {
         .map(p => p.tag);
     }
     
-    // 6. 兜底处理
+    // 兜底处理
     if (matchedTags.length === 0) {
       if (!hasCompatibleAdded) {
         config.outbounds.push(compatible_outbound);
@@ -78,5 +91,4 @@ config.outbounds.forEach(outbound => {
   }
 });
 
-// 7. 输出最终配置
 $content = JSON.stringify(config, null, 2);
