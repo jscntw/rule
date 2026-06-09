@@ -77,7 +77,7 @@
     "auto_detect_interface": true
   },
   "outbounds": [
-    { "tag": "🚀 默认代理", "type": "selector", "outbounds": [ "♻️ AT",  "美国-落地", "日本-落地", "新加坡-落地", "春川-落地", "韩国-落地", "台湾-落地", "香港-落地", "📌 MT" ] },
+    { "tag": "🚀 默认代理", "type": "selector", "outbounds": [ "♻️ AT",  "美国-落地", "日本-落地", "新加坡-落地", "春川-落地", "📌 MT" ] },
     { "tag": "♻️ AT", "type": "selector", "outbounds": [ "all-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "tw-auto", "hk-auto" ] },
     { "tag": "📌 MT", "type": "selector", "outbounds": [ "all", "us", "jp", "sg", "chr", "kr", "tw", "hk" ] },
     { "tag": "🔰 other", "type": "selector", "outbounds": [ "🚀 默认代理", "♻️ AT", "📌 MT" ] },
@@ -101,17 +101,11 @@
 	{ "tag": "日本-中转切换", "type": "selector", "outbounds": ["♻️ AT", "jp-auto", "us-auto", "sg-auto", "chr-auto", "kr-auto", "tw-auto", "hk-auto", "📌 MT"]},
 	{ "tag": "新加坡-中转切换", "type": "selector", "outbounds": ["♻️ AT", "sg-auto", "us-auto", "jp-auto", "chr-auto", "kr-auto", "tw-auto", "hk-auto", "📌 MT"]},
 	{ "tag": "春川-中转切换", "type": "selector", "outbounds": ["♻️ AT", "chr-auto", "us-auto", "jp-auto", "sg-auto", "kr-auto", "tw-auto", "hk-auto", "📌 MT"]},
-    { "tag": "韩国-中转切换", "type": "selector", "outbounds": ["♻️ AT", "kr-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "tw-auto", "hk-auto", "📌 MT"]},
-    { "tag": "台湾-中转切换", "type": "selector", "outbounds": ["♻️ AT", "tw-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "hk-auto", "📌 MT"]},
-	{ "tag": "香港-中转切换", "type": "selector", "outbounds": ["♻️ AT", "hk-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "tw-auto", "📌 MT"]},
     { "tag": "GLOBAL", "type": "selector", "outbounds": [ "direct", "🚀 默认代理" ] },
 	{ "tag": "美国-落地", "type": "selector", "outbounds": [""]},
     { "tag": "日本-落地", "type": "selector", "outbounds": [""]},
     { "tag": "新加坡-落地", "type": "selector", "outbounds": [""]},
 	{ "tag": "春川-落地", "type": "selector", "outbounds": [""]},
-    { "tag": "韩国-落地", "type": "selector", "outbounds": [""]},
-    { "tag": "台湾-落地", "type": "selector", "outbounds": [""]},
-	{ "tag": "香港-落地", "type": "selector", "outbounds": [""]},
     { "tag": "direct", "type": "direct" }
   ],
   "inbounds": [
