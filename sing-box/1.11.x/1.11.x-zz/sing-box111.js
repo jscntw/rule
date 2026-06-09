@@ -5,7 +5,7 @@ const compatible_outbound = {
 };
 let hasCompatibleAdded = false;
 
-// 1. 加载基础配置与节点
+// 1. 加载配置与节点
 let config = JSON.parse($files[0]);
 let proxies = await produceArtifact({
   name,
@@ -16,7 +16,7 @@ let proxies = await produceArtifact({
 
 config.outbounds.push(...proxies);
 
-// 2. 定义排除关键词与映射表
+// 2. 定义排除关键词
 const specialMap = {
   '美国-落地': /美国-落地/i,
   '日本-落地': /日本-落地/i,
@@ -40,31 +40,32 @@ const regionConfig = [
   { tags: ['all', 'all-auto'], regex: null }
 ];
 
-// 4. 执行过滤与填充
+// 4. 执行严谨的过滤逻辑
 config.outbounds.forEach(outbound => {
   if (!outbound.outbounds || !Array.isArray(outbound.outbounds)) return;
   
   const matchConfig = regionConfig.find(conf => conf.tags.includes(outbound.tag));
   
   if (matchConfig) {
-    // 强制清空原有内容，包括 [""]
     outbound.outbounds = []; 
-    
     let matchedTags = [];
     
+    // 过滤函数：检查是否包含排除关键词
+    const isExcluded = (p) => excludedKeywords.some(keyword => p.tag.includes(keyword));
+    
     if (matchConfig.regex === null) {
-      // 核心：排除逻辑
-      // 筛选：节点名不包含任何落地关键字的节点
+      // all 组：直接过滤掉所有排除项
       matchedTags = proxies
-        .filter(p => !excludedKeywords.some(keyword => p.tag.includes(keyword)))
+        .filter(p => !isExcluded(p))
         .map(p => p.tag);
     } else {
+      // 地区组：既要匹配正则，又要排除关键词
       matchedTags = proxies
-        .filter(p => matchConfig.regex.test(p.tag))
+        .filter(p => matchConfig.regex.test(p.tag) && !isExcluded(p))
         .map(p => p.tag);
     }
     
-    // 如果过滤后为空，则使用兜底策略
+    // 5. 兜底处理
     if (matchedTags.length === 0) {
       if (!hasCompatibleAdded) {
         config.outbounds.push(compatible_outbound);
@@ -77,5 +78,4 @@ config.outbounds.forEach(outbound => {
   }
 });
 
-// 5. 输出最终配置
 $content = JSON.stringify(config, null, 2);
