@@ -1,4 +1,11 @@
 const { type, name } = $arguments;
+
+const compatible_outbound = {
+  tag: 'COMPATIBLE-DIRECT',
+  type: 'direct',
+};
+let hasCompatibleAdded = false;
+
 let config = JSON.parse($files[0]);
 let proxies = await produceArtifact({
   name,
@@ -9,58 +16,45 @@ let proxies = await produceArtifact({
 
 config.outbounds.push(...proxies);
 
-// 配置区：只需在这里增减地区
-const specialMap = {
-  '美国-落地': /美国-落地/i,
-  '日本-落地': /日本-落地/i,
-  '新加坡-落地': /新加坡-落地/i,
-  '春川-落地': /春川-落地/i,
-  '韩国-落地': /韩国-落地/i,
-  '台湾-落地': /台湾-落地/i,
-  '香港-落地': /香港-落地/i
-};
+// 直接使用你提供的 Emoji 进行匹配
+const regionConfig = [
+  { tags: ['hk', 'hk-auto'], regex: /🇭🇰|港|hk/i },
+  { tags: ['tw', 'tw-auto'], regex: /🇹🇼|台|tw/i },
+  { tags: ['jp', 'jp-auto'], regex: /🇯🇵|日|jp/i },
+  { tags: ['sg', 'sg-auto'], regex: /🇸🇬|新|sg/i },
+  { tags: ['kr', 'kr-auto'], regex: /🇰🇷|韩|kr/i },
+  { tags: ['us', 'us-auto'], regex: /🇺🇲|🇺🇸|美|us/i }, // 兼容两种常见的美国国旗编码
+  { tags: ['all', 'all-auto'], regex: null }
+];
 
-const regionMap = {
-  'us': /🇺🇸|us|united\s?states|🇺🇲/i,
-  'jp': /jp|japan|🇯🇵/i,
-  'sg': /sg|singapore|🇸🇬/i,
-  'kr': /kr|korea|🇰🇷/i,
-  'tw': /tw|taiwan|🇹🇼/i,
-  'hk': /hk|hong\s?kong|🇭🇰/i,
-  'chr': /🇳🇱/i
-};
+config.outbounds.forEach(outbound => {
+  if (!outbound.outbounds || !Array.isArray(outbound.outbounds)) return;
 
-// 逻辑区：核心处理流程
-config.outbounds.map(i => {
-  if (!i.outbounds || !Array.isArray(i.outbounds)) return;
+  const matchConfig = regionConfig.find(conf => conf.tags.includes(outbound.tag));
 
-  // 全选逻辑
-  if (['all', 'all-auto'].includes(i.tag)) {
-    i.outbounds.push(...getTags(proxies));
-  }
+  if (matchConfig) {
+    outbound.outbounds = [];
 
-  // 落地逻辑
-  if (specialMap[i.tag]) {
-    i.outbounds.push(...getTags(proxies, specialMap[i.tag]));
-  }
+    let matchedTags = [];
+    if (matchConfig.regex === null) {
+      matchedTags = proxies.map(p => p.tag);
+    } else {
+      // 这里的逻辑：只要节点 tag 包含对应的国旗，就抓取
+      matchedTags = proxies
+        .filter(p => matchConfig.regex.test(p.tag))
+        .map(p => p.tag);
+    }
 
-  // 自动组逻辑 (完美支持 key 和 key-auto)
-  for (const [key, regex] of Object.entries(regionMap)) {
-    if (i.tag === key || i.tag === `${key}-auto`) {
-      i.outbounds.push(...getTags(proxies, regex));
+    outbound.outbounds.push(...matchedTags);
+
+    if (outbound.outbounds.length === 0) {
+      if (!hasCompatibleAdded) {
+        config.outbounds.push(compatible_outbound);
+        hasCompatibleAdded = true;
+      }
+      outbound.outbounds.push(compatible_outbound.tag);
     }
   }
 });
 
-// 兜底逻辑
-config.outbounds.forEach(outbound => {
-  if (Array.isArray(outbound.outbounds) && outbound.outbounds.length === 0) {
-    outbound.outbounds.push("direct");
-  }
-});
-
 $content = JSON.stringify(config, null, 2);
-
-function getTags(proxies, regex) {
-  return (regex ? proxies.filter(p => regex.test(p.tag)) : proxies).map(p => p.tag);
-}
