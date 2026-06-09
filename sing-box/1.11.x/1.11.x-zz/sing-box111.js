@@ -30,12 +30,12 @@ const excludedKeywords = Object.keys(specialMap);
 
 // 3. 定义分组规则
 const regionConfig = [
-  { tags: ['hk', 'hk-auto'], regex: /🇭🇰|港|hk/i },
-  { tags: ['tw', 'tw-auto'], regex: /🇹🇼|台|tw/i },
-  { tags: ['jp', 'jp-auto'], regex: /🇯🇵|日|jp/i },
-  { tags: ['sg', 'sg-auto'], regex: /🇸🇬|新|sg/i },
-  { tags: ['kr', 'kr-auto'], regex: /🇰🇷|韩|kr/i },
-  { tags: ['us', 'us-auto'], regex: /🇺🇲|🇺🇸|美|us/i },
+  { tags: ['hk', 'hk-auto'], regex: /🇭🇰|hk/i },
+  { tags: ['tw', 'tw-auto'], regex: /🇹🇼|tw/i },
+  { tags: ['jp', 'jp-auto'], regex: /🇯🇵|jp/i },
+  { tags: ['sg', 'sg-auto'], regex: /🇸🇬|sg/i },
+  { tags: ['kr', 'kr-auto'], regex: /🇰🇷|kr/i },
+  { tags: ['us', 'us-auto'], regex: /🇺🇲|🇺🇸|us/i },
   { tags: ['chr', 'chr-auto'], regex: /🇳🇱/i },
   { tags: ['all', 'all-auto'], regex: null }
 ];
