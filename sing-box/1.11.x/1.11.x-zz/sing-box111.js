@@ -15,7 +15,15 @@ let proxies = await produceArtifact({
 });
 
 config.outbounds.push(...proxies);
-
+const specialMap = {
+  '美国-落地': /美国-落地/i,
+  '日本-落地': /日本-落地/i,
+  '新加坡-落地': /新加坡-落地/i,
+  '春川-落地': /春川-落地/i,
+  '韩国-落地': /韩国-落地/i,
+  '台湾-落地': /台湾-落地/i,
+  '香港-落地': /香港-落地/i
+};
 // 直接使用你提供的 Emoji 进行匹配
 const regionConfig = [
   { tags: ['hk', 'hk-auto'], regex: /🇭🇰|港|hk/i },
@@ -24,6 +32,7 @@ const regionConfig = [
   { tags: ['sg', 'sg-auto'], regex: /🇸🇬|新|sg/i },
   { tags: ['kr', 'kr-auto'], regex: /🇰🇷|韩|kr/i },
   { tags: ['us', 'us-auto'], regex: /🇺🇲|🇺🇸|美|us/i }, // 兼容两种常见的美国国旗编码
+  { tags: ['chr', 'chr-auto'], regex: /🇳🇱/i },
   { tags: ['all', 'all-auto'], regex: null }
 ];
 
