@@ -5,6 +5,7 @@ const compatible_outbound = {
 };
 let hasCompatibleAdded = false;
 
+// 1. 加载基础配置与节点
 let config = JSON.parse($files[0]);
 let proxies = await produceArtifact({
   name,
@@ -15,6 +16,7 @@ let proxies = await produceArtifact({
 
 config.outbounds.push(...proxies);
 
+// 2. 定义排除关键词与映射表
 const specialMap = {
   '美国-落地': /美国-落地/i,
   '日本-落地': /日本-落地/i,
@@ -24,10 +26,9 @@ const specialMap = {
   '台湾-落地': /台湾-落地/i,
   '香港-落地': /香港-落地/i
 };
-
-// 自动提取需要排除的关键词
 const excludedKeywords = Object.keys(specialMap);
 
+// 3. 定义分组规则
 const regionConfig = [
   { tags: ['hk', 'hk-auto'], regex: /🇭🇰|港|hk/i },
   { tags: ['tw', 'tw-auto'], regex: /🇹🇼|台|tw/i },
@@ -39,17 +40,21 @@ const regionConfig = [
   { tags: ['all', 'all-auto'], regex: null }
 ];
 
+// 4. 执行过滤与填充
 config.outbounds.forEach(outbound => {
   if (!outbound.outbounds || !Array.isArray(outbound.outbounds)) return;
   
   const matchConfig = regionConfig.find(conf => conf.tags.includes(outbound.tag));
   
   if (matchConfig) {
-    outbound.outbounds = [];
+    // 强制清空原有内容，包括 [""]
+    outbound.outbounds = []; 
+    
     let matchedTags = [];
     
     if (matchConfig.regex === null) {
-      // 排除逻辑：tag 中不包含任何“落地”关键词的节点才会被选中
+      // 核心：排除逻辑
+      // 筛选：节点名不包含任何落地关键字的节点
       matchedTags = proxies
         .filter(p => !excludedKeywords.some(keyword => p.tag.includes(keyword)))
         .map(p => p.tag);
@@ -59,17 +64,18 @@ config.outbounds.forEach(outbound => {
         .map(p => p.tag);
     }
     
-    outbound.outbounds.push(...matchedTags);
-    
-    // 如果没有任何匹配，加入兜底策略
-    if (outbound.outbounds.length === 0) {
+    // 如果过滤后为空，则使用兜底策略
+    if (matchedTags.length === 0) {
       if (!hasCompatibleAdded) {
         config.outbounds.push(compatible_outbound);
         hasCompatibleAdded = true;
       }
       outbound.outbounds.push(compatible_outbound.tag);
+    } else {
+      outbound.outbounds.push(...matchedTags);
     }
   }
 });
 
+// 5. 输出最终配置
 $content = JSON.stringify(config, null, 2);
