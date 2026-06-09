@@ -1,8 +1,4 @@
 const { type, name } = $arguments;
-const compatible_outbound = {
-  tag: 'COMPATIBLE-DIRECT',
-  type: 'direct',
-};
 
 // 1. 加载配置与节点
 let config = JSON.parse($files[0]);
@@ -39,22 +35,21 @@ const regionConfig = [
   { tags: ['all', 'all-auto'], regex: null }
 ];
 
-// 4.1 填充落地节点
+// 4.1 填充落地节点，若匹配结果为空，填入 ["direct"]
 Object.keys(specialMap).forEach(groupTag => {
   const group = config.outbounds.find(o => o.tag === groupTag);
   if (group) {
     const matched = proxies.filter(p => specialMap[groupTag].test(p.tag)).map(p => p.tag);
-    // 如果没有节点，依然保留 [""]
-    group.outbounds = matched.length > 0 ? matched : [""];
+    group.outbounds = matched.length > 0 ? matched : ["direct"];
   }
 });
 
-// 4.2 数据清洗
+// 4.2 数据预清洗
 const cleanProxies = proxies.filter(p => 
   !excludedKeywords.some(keyword => p.tag.includes(keyword))
 );
 
-// 5. 执行常规分组填充
+// 5. 执行其他分组填充，若匹配结果为空，填入 ["direct"]
 config.outbounds.forEach(outbound => {
   if (specialMap.hasOwnProperty(outbound.tag)) return;
   if (!outbound.outbounds || !Array.isArray(outbound.outbounds)) return;
@@ -71,8 +66,8 @@ config.outbounds.forEach(outbound => {
         .map(p => p.tag);
     }
     
-    // --- 核心修改：如果匹配结果为空，强制设置回 [""] ---
-    outbound.outbounds = matchedTags.length > 0 ? matchedTags : [""];
+    // 强制使用 ["direct"] 作为兜底，防止 missing tags 报错
+    outbound.outbounds = matchedTags.length > 0 ? matchedTags : ["direct"];
   }
 });
 
