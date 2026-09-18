@@ -35,21 +35,21 @@ const regionMap = {
   'chr': /🇳🇱/i
 };
 
-// 逻辑区：核心处理流程
+// 核心处理
 config.outbounds.forEach(i => {
-  if (!i.outbounds || !Array.isArray(i.outbounds)) return;
+  if (!Array.isArray(i.outbounds)) return;
 
-  // 全选逻辑
+  // 全选
   if (['all', 'all-auto'].includes(i.tag)) {
     i.outbounds.push(...getTags(proxies));
   }
 
-  // 落地逻辑
+  // 落地
   if (specialMap[i.tag]) {
     i.outbounds.push(...getTags(proxies, specialMap[i.tag]));
   }
 
-  // 地区自动组
+  // 地区
   for (const [key, regex] of Object.entries(regionMap)) {
     if (i.tag === key || i.tag === `${key}-auto`) {
       i.outbounds.push(...getTags(proxies, regex));
@@ -57,22 +57,34 @@ config.outbounds.forEach(i => {
   }
 });
 
-// 兜底逻辑
+// 兜底：没有节点的选择器使用 Direct
 config.outbounds.forEach(outbound => {
   if (Array.isArray(outbound.outbounds) && outbound.outbounds.length === 0) {
     outbound.outbounds.push("Direct");
   }
 });
 
-// 修正自动生成的小写 direct
-// sing-box 配置中实际定义的是 "Direct"
-config.outbounds.forEach(outbound => {
-  if (Array.isArray(outbound.outbounds)) {
-    outbound.outbounds = outbound.outbounds.map(tag =>
-      tag === "direct" ? "Direct" : tag
-    );
+// 最终统一修正 outbound 引用
+function fixDirect(obj) {
+  if (Array.isArray(obj)) {
+    obj.forEach(item => fixDirect(item));
+    return;
   }
-});
+
+  if (obj && typeof obj === 'object') {
+    for (const key of Object.keys(obj)) {
+      if (key === 'outbounds' && Array.isArray(obj[key])) {
+        obj[key] = obj[key].map(tag =>
+          tag === 'direct' ? 'Direct' : tag
+        );
+      }
+
+      fixDirect(obj[key]);
+    }
+  }
+}
+
+fixDirect(config);
 
 $content = JSON.stringify(config, null, 2);
 
