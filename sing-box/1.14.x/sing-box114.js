@@ -22,11 +22,11 @@ const specialMap = {
 
 const regionMap = {
   'us': /🇺🇸|us|united\s?states|🇺🇲/i,
-  'jp': /jp|japan|🇯🇵/i,
-  'sg': /sg|singapore|🇸🇬/i,
-  'kr': /kr|korea|🇰🇷/i,
-  'tw': /tw|taiwan|🇹🇼/i,
-  'hk': /hk|hong\s?kong|🇭🇰/i,
+  'jp': /japan|🇯🇵/i,
+  'sg': /singapore|🇸🇬/i,
+  'kr': /korea|🇰🇷/i,
+  'tw': /taiwan|🇹🇼/i,
+  'hk': /hong\s?kong|🇭🇰/i,
   'chr': /🇳🇱/i
 };
 
