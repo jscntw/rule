@@ -1,0 +1,203 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "experimental": {
+    "clash_api": {
+      "external_controller": "127.0.0.1:9090",
+      "external_ui": "zashboard",
+      "secret": "singbox",
+      "external_ui_download_url": "https://gh-proxy.com/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Direct",
+      "default_mode": "Rule"
+    },
+    "cache_file": {
+      "enabled": true,
+      "store_fakeip": true,
+      "store_dns": true
+    }
+  },
+  "services": [
+    {
+      "type": "api",
+      "listen": "::",
+      "listen_port": 18181,
+      "secret": "singbox",
+      "dashboard": {
+        "enabled": true,
+        "path": "dashboard",
+        "download_url": "https://gh-proxy.com/https://github.com/SagerNet/sing-box-dashboard/archive/refs/heads/gh-pages.zip",
+        "http_client": "default",
+        "update_interval": "1d"
+      }
+    }
+  ],
+  "http_clients": [
+    {
+      "tag": "default",
+      "version": 2,
+      "detour": "Proxy"
+    }
+  ],
+  "dns": {
+    "servers": [
+      {
+        "tag": "hosts_fix","type": "hosts","predefined": {
+          "dns.alidns.com": ["223.5.5.5","223.6.6.6"],
+          "doh.pub": ["1.12.12.21","120.53.53.53"],
+          "dns.google": ["8.8.8.8","8.8.4.4"],
+          "cloudflare-dns.com": ["104.16.248.249","104.16.249.249"]}
+      },
+      {"tag": "cf-doh","type": "https","server": "cloudflare-dns.com","detour": "Proxy","domain_resolver": "hosts_fix"},
+      {"tag": "gg-doh","type": "https","server": "dns.google","detour": "Proxy","domain_resolver": "hosts_fix"},
+      {"tag": "ali-doh","type": "https","server": "dns.alidns.com","domain_resolver": "hosts_fix"},
+      {"tag": "tx-doh","type": "https","server": "doh.pub","domain_resolver": "hosts_fix"},
+      {"tag": "ali-udp","type": "udp","server": "223.5.5.5"},
+      {"tag": "tx-udp","type": "udp","server": "119.29.29.29"},
+      {"tag": "remote","type": "fakeip","inet4_range": "198.18.0.0/15","inet6_range": "fc00::/18"},
+      {"tag": "local","type": "local","neighbor_domain": [".local",".lan"]}
+    ],
+    "rules": [
+      {"rule_set": ["Reject"],"action": "predefined"},
+      {"clash_mode": "Direct","action": "route","server": "local"},
+      {"clash_mode": "Global","action": "route","server": "remote"},
+      {"rule_set": ["AppleCN"],"action": "route","server": "ali-doh"},
+      {"type": "logical","mode": "and","rules": [{"clash_mode": "AllowAds","invert": true},{"rule_set": ["Reject","Ads_AWAvenue"]}],"action": "reject"},
+      {"rule_set": ["ChinaDomain"],"query_type": ["A","AAAA"],"action": "evaluate","server": "ali-udp","tag": "ali-response","timeout": "3s"},
+      {"rule_set": ["ChinaDomain"],"query_type": ["A","AAAA"],"action": "evaluate","server": "tx-udp","tag": "tx-response","timeout": "3s"},
+      {"rule_set": ["ChinaDomain"],"query_type": ["A","AAAA"],"match_response": "ali-response","ip_accept_any": true,"action": "respond","race": true},
+      {"rule_set": ["ChinaDomain"],"query_type": ["A","AAAA"],"match_response": "tx-response","ip_accept_any": true,"action": "respond","race": true},
+      {"rule_set": ["ChinaDomain"],"action": "route","server": "ali-udp","timeout": "3s"},
+      {"query_type": "HTTPS","action": "reject"},
+      {"domain_suffix": ["lancache.steamcontent.com","10099.com.cn","msftconnecttest.com","msftncsi.com","local","lan","home","internal","corp","example.com"],"server": "local"},
+      {"query_type": ["A","AAAA"],"action": "route","server": "remote","rewrite_ttl": 1}
+    ],
+    "optimistic": true,
+    "strategy": "prefer_ipv4",
+    "final": "ali-doh"
+  },
+  "inbounds": [
+    {
+      "tag": "tun-in",
+      "type": "tun",
+      "address": [
+        "172.19.0.0/30",
+        "fdfe:dcba:9876::0/126"
+      ],
+      "stack": "system",
+      "auto_route": true,
+      "strict_route": true,
+      "platform": {
+        "http_proxy": {
+          "enabled": true,
+          "server": "127.0.0.1",
+          "server_port": 7890
+        }
+      }
+    },
+    {
+      "tag": "mixed-in",
+      "type": "mixed",
+      "listen": "127.0.0.1",
+      "listen_port": 7890
+    }
+  ],
+  "outbounds": [
+    {"tag": "📌 MT", "type": "selector", "outbounds": ["us", "jp", "sg", "chr", "kr", "tw", "hk"]},
+    {"tag": "♻️ AT", "type": "selector", "outbounds": ["all-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "tw-auto", "hk-auto"]},
+    {"tag":"Proxy","type":"selector","outbounds":["♻️ AT", "📌 MT", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "台湾-落地", "香港-落地", "Others", "Direct"],"default": "Direct","interrupt_exist_connections": true},
+    {"tag": "🚀 🇺🇲 NODE", "type": "selector", "outbounds": ["美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "台湾-落地", "香港-落地", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "🚀 🇯🇵 NODE", "type": "selector", "outbounds": ["日本-落地", "美国-落地", "星岛-落地", "春川-落地", "韩国-落地", "台湾-落地", "香港-落地", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "🚀 🇸🇬 NODE", "type": "selector", "outbounds": ["星岛-落地", "美国-落地", "日本-落地", "春川-落地", "韩国-落地", "台湾-落地", "香港-落地", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "🚀 chr NODE", "type": "selector", "outbounds": ["春川-落地", "美国-落地", "日本-落地", "星岛-落地", "韩国-落地", "台湾-落地", "香港-落地", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "🚀 🇰🇷 NODE", "type": "selector", "outbounds": ["韩国-落地", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "台湾-落地", "香港-落地", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "🚀 🇹🇼 NODE", "type": "selector", "outbounds": ["台湾-落地", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "香港-落地", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "🚀 🇭🇰 NODE", "type": "selector", "outbounds": ["香港-落地", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "台湾-落地","♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "🔰 other", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "emby", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "Google", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "Telegram", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "AI","type": "selector","outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"],"default": "us","interrupt_exist_connections": true},
+    {"tag": "X","type": "selector","outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"],"default": "us","interrupt_exist_connections": true},
+    {"tag": "GLOBAL", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "美国-中转切换", "type": "selector", "outbounds": ["us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "tw-auto", "hk-auto", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "日本-中转切换", "type": "selector", "outbounds": ["jp-auto", "us-auto", "sg-auto", "chr-auto", "kr-auto", "tw-auto", "hk-auto", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "星岛-中转切换", "type": "selector", "outbounds": ["sg-auto", "us-auto", "jp-auto", "chr-auto", "kr-auto", "tw-auto", "hk-auto", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+  	{"tag": "春川-中转切换", "type": "selector", "outbounds": ["chr-auto", "us-auto", "jp-auto", "sg-auto", "kr-auto", "tw-auto", "hk-auto", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "韩国-中转切换", "type": "selector", "outbounds": ["kr-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "tw-auto", "hk-auto", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "台湾-中转切换", "type": "selector", "outbounds": ["tw-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "hk-auto", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "香港-中转切换", "type": "selector", "outbounds": ["hk-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "tw-auto", "♻️ AT", "📌 MT"],"default": "♻️ AT","interrupt_exist_connections": true},
+    {"tag": "us", "type": "selector", "outbounds": []},
+    {"tag": "jp", "type": "selector", "outbounds": []},
+    {"tag": "sg", "type": "selector", "outbounds": []},
+    {"tag": "chr", "type": "selector", "outbounds": []},
+    {"tag": "kr", "type": "selector", "outbounds": []},
+    {"tag": "tw", "type": "selector", "outbounds": []},
+    {"tag": "hk", "type": "selector", "outbounds": []},
+    {"tag": "us-auto", "type": "urltest", "outbounds": [], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50},
+    {"tag": "jp-auto", "type": "urltest", "outbounds": [], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50},
+    {"tag": "sg-auto", "type": "urltest", "outbounds": [], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50},
+    {"tag": "chr-auto", "type": "urltest", "outbounds": [], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50},
+    {"tag": "kr-auto", "type": "urltest", "outbounds": [], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50},
+    {"tag": "tw-auto", "type": "urltest", "outbounds": [], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50},
+    {"tag": "hk-auto", "type": "urltest", "outbounds": [], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 50},
+    {"tag": "all-auto", "type": "urltest", "outbounds": [], "url": "https://www.gstatic.com/generate_204", "interval": "10m", "tolerance": 100},
+    {"tag": "all", "type": "selector", "outbounds": []},
+    {"tag": "美国-落地", "type": "selector", "outbounds": []},
+    {"tag": "日本-落地", "type": "selector", "outbounds": []},
+    {"tag": "星岛-落地", "type": "selector", "outbounds": []},
+    {"tag": "春川-落地", "type": "selector", "outbounds": []},
+    {"tag": "韩国-落地", "type": "selector", "outbounds": []},
+    {"tag": "台湾-落地", "type": "selector", "outbounds": []},
+    {"tag": "香港-落地", "type": "selector", "outbounds": []},
+    {"tag": "Direct","type": "direct"}
+  ],
+  "route": {
+    "default_domain_resolver": "ali-udp",
+    "default_http_client": "default",
+    "auto_detect_interface": true,
+    "find_process": true,
+    "final": "Proxy",
+    "rules": [
+      {"action": "sniff"},
+      {"type": "logical","mode": "or","rules":[{"port":53},{"protocol": "dns"}],"action": "hijack-dns"},
+      {"clash_mode": "Direct","action": "route","outbound": "Direct"},
+      {"rule_set": ["AppleCN"],"action": "route","outbound": "Direct"},
+      {"type": "logical","mode": "and","rules": [{"clash_mode": "AllowAds","invert": true},{"rule_set": ["Reject","Ads_AWAvenue"]}],"action": "reject"},
+      {"rule_set": ["AI"],"action": "route","outbound": "AI"},
+      {"rule_set": ["Telegram"],"action": "route","outbound": "Telegram"},
+      {"rule_set": ["Twitter", "Facebook"],"action": "route","outbound": "X"},
+      {"rule_set": ["Google", "YouTube", "Github"],"action": "route","outbound": "Google"},
+      {"rule_set": ["ChinaDomain"],"action": "route","outbound": "Direct"},
+      {"rule_set": ["Proxy"],"action": "route","outbound": "Proxy"},
+      {"rule_set": ["AppleProxy"],"action": "route","outbound": "Proxy"},
+      {"rule_set": ["emby"],"action": "route","outbound": "emby"},
+      {"action": "resolve"},
+      {"rule_set": ["ChinaIP"],"action": "route","outbound": "Direct"},
+      {"ip_is_private": true,"action": "route","outbound": "Direct"}
+    ],
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": [
+          "Reject", "Ads_AWAvenue", "Proxy",
+          "AI", "Telegram", "Twitter", "Facebook", "TikTok",
+          "Google", "YouTube", "Github",
+          "AppleCN", "AppleProxy", "ChinaDomain", "ChinaIP"
+        ],
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/Repcz/Tool/X/sing-box/Rules/{tag}.srs",
+        "update_interval": "24h"
+      },
+      {
+        "type": "remote",
+        "tag": "emby",
+        "format": "source",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/rule/main/sing-box/emby.json",
+        "download_detour": "Direct",
+        "update_interval": "24h"
+      }
+    ]
+  }
+}
