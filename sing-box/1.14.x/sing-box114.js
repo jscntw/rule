@@ -14,6 +14,7 @@ const specialMap = {
   '美国-落地': /美国-落地/i,
   '日本-落地': /日本-落地/i,
   '星岛-落地': /星岛-落地/i,
+  '春川-落地': /春川-落地/i,
   '韩国-落地': /韩国-落地/i,
   '台湾-落地': /台湾-落地/i,
   '香港-落地': /香港-落地/i
@@ -45,7 +46,7 @@ config.outbounds.map(i => {
 
   // 自动组逻辑 (完美支持 key 和 key-auto)
   for (const [key, regex] of Object.entries(regionMap)) {
-    if (i.tag === key || i.tag === `${key}-auto`) {
+    if (i.tag === key || i.tag === `${key}-auto`) {guan
       i.outbounds.push(...getTags(proxies, regex));
     }
   }
@@ -54,7 +55,7 @@ config.outbounds.map(i => {
 // 兜底逻辑
 config.outbounds.forEach(outbound => {
   if (Array.isArray(outbound.outbounds) && outbound.outbounds.length === 0) {
-    outbound.outbounds.push("direct");
+    outbound.outbounds.push("Direct");
   }
 });
 
