@@ -1,5 +1,6 @@
 const { type, name } = $arguments;
 let config = JSON.parse($files[0]);
+
 let proxies = await produceArtifact({
   name,
   type: /^1$|col/i.test(type) ? 'collection' : 'subscription',
@@ -7,7 +8,12 @@ let proxies = await produceArtifact({
   produceType: 'internal',
 });
 
+// 删除订阅节点中与模板已有 outbound 重名的项目
+const existingTags = new Set(config.outbounds.map(p => p.tag));
+proxies = proxies.filter(p => !existingTags.has(p.tag));
+
 config.outbounds.push(...proxies);
+
 
 // 配置区：只需在这里增减地区
 const specialMap = {
@@ -20,6 +26,7 @@ const specialMap = {
   '香港-落地': /香港-中转落地/i
 };
 
+
 const regionMap = {
   'us': /🇺🇸|united\s?states|🇺🇲/i,
   'jp': /japan|🇯🇵/i,
@@ -30,27 +37,32 @@ const regionMap = {
   'chr': /🇳🇱/i
 };
 
+
 // 逻辑区：核心处理流程
-config.outbounds.map(i => {
+config.outbounds.forEach(i => {
   if (!i.outbounds || !Array.isArray(i.outbounds)) return;
+
 
   // 全选逻辑
   if (['all', 'all-auto'].includes(i.tag)) {
     i.outbounds.push(...getTags(proxies));
   }
 
+
   // 落地逻辑
   if (specialMap[i.tag]) {
     i.outbounds.push(...getTags(proxies, specialMap[i.tag]));
   }
 
-  // 自动组逻辑 (完美支持 key 和 key-auto)
+
+  // 地区自动组
   for (const [key, regex] of Object.entries(regionMap)) {
-    if (i.tag === key || i.tag === `${key}-auto`) {guan
+    if (i.tag === key || i.tag === `${key}-auto`) {
       i.outbounds.push(...getTags(proxies, regex));
     }
   }
 });
+
 
 // 兜底逻辑
 config.outbounds.forEach(outbound => {
@@ -59,7 +71,9 @@ config.outbounds.forEach(outbound => {
   }
 });
 
+
 $content = JSON.stringify(config, null, 2);
+
 
 function getTags(proxies, regex) {
   return (regex ? proxies.filter(p => regex.test(p.tag)) : proxies).map(p => p.tag);
