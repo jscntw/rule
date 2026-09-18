@@ -21,7 +21,7 @@ const specialMap = {
 };
 
 const regionMap = {
-  'us': /🇺🇸|us|united\s?states|🇺🇲/i,
+  'us': /🇺🇸|united\s?states|🇺🇲/i,
   'jp': /japan|🇯🇵/i,
   'sg': /singapore|🇸🇬/i,
   'kr': /korea|🇰🇷/i,
