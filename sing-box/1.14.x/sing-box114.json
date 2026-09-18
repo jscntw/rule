@@ -106,7 +106,7 @@
   "outbounds": [
     {"tag": "📌 MT", "type": "selector", "outbounds": ["us", "jp", "sg", "chr", "kr", "tw", "hk"]},
     {"tag": "♻️ AT", "type": "selector", "outbounds": ["all-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "tw-auto", "hk-auto"]},
-    {"tag": "Proxy", "type": "selector", "outbounds": ["♻️ AT", "📌 MT", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "台湾-落地", "香港-落地", "Others", "Direct"], "default": "Direct", "interrupt_exist_connections": true},
+    {"tag": "Proxy", "type": "selector", "outbounds": ["♻️ AT", "📌 MT", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "台湾-落地", "香港-落地", "🔰 other", "Direct"], "default": "♻️ AT", "interrupt_exist_connections": true},
     {"tag": "🚀 🇺🇲 NODE", "type": "selector", "outbounds": ["美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "台湾-落地", "香港-落地", "♻️ AT", "📌 MT"], "default": "♻️ AT", "interrupt_exist_connections": true},
     {"tag": "🚀 🇯🇵 NODE", "type": "selector", "outbounds": ["日本-落地", "美国-落地", "星岛-落地", "春川-落地", "韩国-落地", "台湾-落地", "香港-落地", "♻️ AT", "📌 MT"], "default": "♻️ AT", "interrupt_exist_connections": true},
     {"tag": "🚀 🇸🇬 NODE", "type": "selector", "outbounds": ["星岛-落地", "美国-落地", "日本-落地", "春川-落地", "韩国-落地", "台湾-落地", "香港-落地", "♻️ AT", "📌 MT"], "default": "♻️ AT", "interrupt_exist_connections": true},
@@ -114,7 +114,7 @@
     {"tag": "🚀 🇰🇷 NODE", "type": "selector", "outbounds": ["韩国-落地", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "台湾-落地", "香港-落地", "♻️ AT", "📌 MT"], "default": "♻️ AT", "interrupt_exist_connections": true},
     {"tag": "🚀 🇹🇼 NODE", "type": "selector", "outbounds": ["台湾-落地", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "香港-落地", "♻️ AT", "📌 MT"], "default": "♻️ AT", "interrupt_exist_connections": true},
     {"tag": "🚀 🇭🇰 NODE", "type": "selector", "outbounds": ["香港-落地", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "台湾-落地", "♻️ AT", "📌 MT"], "default": "♻️ AT", "interrupt_exist_connections": true},
-    {"tag": "🔰 other", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "Proxy", "interrupt_exist_connections": true},
+	{"tag": "🔰 other", "type": "selector", "outbounds": ["🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "🚀 🇺🇲 NODE", "interrupt_exist_connections": true},
     {"tag": "emby", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "Proxy", "interrupt_exist_connections": true},
     {"tag": "Google", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "Proxy", "interrupt_exist_connections": true},
     {"tag": "Telegram", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "Proxy", "interrupt_exist_connections": true},
@@ -195,7 +195,6 @@
         "tag": "emby",
         "format": "source",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/rule/main/sing-box/emby.json",
-        "download_detour": "Direct",
         "update_interval": "24h"
       }
     ]
