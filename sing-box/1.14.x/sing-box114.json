@@ -127,7 +127,7 @@
     {"tag": "春川-中转切换", "type": "selector", "outbounds": ["chr-auto", "us-auto", "jp-auto", "sg-auto", "kr-auto", "tw-auto", "hk-auto"], "default": "chr-auto", "interrupt_exist_connections": true},
     {"tag": "韩国-中转切换", "type": "selector", "outbounds": ["kr-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "tw-auto", "hk-auto"], "default": "kr-auto", "interrupt_exist_connections": true},
     {"tag": "台湾-中转切换", "type": "selector", "outbounds": ["tw-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "hk-auto"], "default": "tw-auto", "interrupt_exist_connections": true},
-    {"tag": "香港-中转切换", "type": "selector", "outbounds": ["hk-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "tw-auto"], "default": "hk-auto", "interrupt_exist_connections": true}
+    {"tag": "香港-中转切换", "type": "selector", "outbounds": ["hk-auto", "us-auto", "jp-auto", "sg-auto", "chr-auto", "kr-auto", "tw-auto"], "default": "hk-auto", "interrupt_exist_connections": true},
     {"tag": "us", "type": "selector", "outbounds": []},
     {"tag": "jp", "type": "selector", "outbounds": []},
     {"tag": "sg", "type": "selector", "outbounds": []},
