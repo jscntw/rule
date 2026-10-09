@@ -43,35 +43,38 @@
   "dns": {
     "servers": [
       {
-        "tag": "hosts_fix","type": "hosts","predefined": {
-          "dns.alidns.com": ["223.5.5.5","223.6.6.6"],
-          "doh.pub": ["1.12.12.21","120.53.53.53"],
-          "dns.google": ["8.8.8.8","8.8.4.4"],
-          "cloudflare-dns.com": ["104.16.248.249","104.16.249.249"]}
+        "tag": "hosts_fix",
+        "type": "hosts",
+        "predefined": {
+          "dns.alidns.com": ["223.5.5.5", "223.6.6.6"],
+          "doh.pub": ["1.12.12.21", "120.53.53.53"],
+          "dns.google": ["8.8.8.8", "8.8.4.4"],
+          "cloudflare-dns.com": ["104.16.248.249", "104.16.249.249"]
+        }
       },
-      {"tag": "cf-doh","type": "https","server": "cloudflare-dns.com","detour": "Proxy","domain_resolver": "hosts_fix"},
-      {"tag": "gg-doh","type": "https","server": "dns.google","detour": "Proxy","domain_resolver": "hosts_fix"},
-      {"tag": "ali-doh","type": "https","server": "dns.alidns.com","domain_resolver": "hosts_fix"},
-      {"tag": "tx-doh","type": "https","server": "doh.pub","domain_resolver": "hosts_fix"},
-      {"tag": "ali-udp","type": "udp","server": "223.5.5.5"},
-      {"tag": "tx-udp","type": "udp","server": "119.29.29.29"},
-      {"tag": "remote","type": "fakeip","inet4_range": "198.18.0.0/15","inet6_range": "fc00::/18"},
-      {"tag": "local","type": "local","neighbor_domain": [".local",".lan"]}
+      {"tag": "cf-doh", "type": "https", "server": "cloudflare-dns.com", "detour": "Proxy", "domain_resolver": "hosts_fix"},
+      {"tag": "gg-doh", "type": "https", "server": "dns.google", "detour": "Proxy", "domain_resolver": "hosts_fix"},
+      {"tag": "ali-doh", "type": "https", "server": "dns.alidns.com", "domain_resolver": "hosts_fix"},
+      {"tag": "tx-doh", "type": "https", "server": "doh.pub", "domain_resolver": "hosts_fix"},
+      {"tag": "ali-udp", "type": "udp", "server": "223.5.5.5"},
+      {"tag": "tx-udp", "type": "udp", "server": "119.29.29.29"},
+      {"tag": "remote", "type": "fakeip", "inet4_range": "198.18.0.0/15", "inet6_range": "fc00::/18"},
+      {"tag": "local", "type": "local", "neighbor_domain": [".local", ".lan"]}
     ],
     "rules": [
-      {"rule_set": ["Reject"],"action": "predefined"},
-      {"clash_mode": "Direct","action": "route","server": "local"},
-      {"clash_mode": "Global","action": "route","server": "remote"},
-      {"rule_set": ["AppleCN"],"action": "route","server": "ali-doh"},
-      {"type": "logical","mode": "and","rules": [{"clash_mode": "AllowAds","invert": true},{"rule_set": ["Reject","Ads_AWAvenue"]}],"action": "reject"},
-      {"rule_set": ["ChinaDomain"],"query_type": ["A","AAAA"],"action": "evaluate","server": "ali-udp","tag": "ali-response","timeout": "3s"},
-      {"rule_set": ["ChinaDomain"],"query_type": ["A","AAAA"],"action": "evaluate","server": "tx-udp","tag": "tx-response","timeout": "3s"},
-      {"rule_set": ["ChinaDomain"],"query_type": ["A","AAAA"],"match_response": "ali-response","ip_accept_any": true,"action": "respond","race": true},
-      {"rule_set": ["ChinaDomain"],"query_type": ["A","AAAA"],"match_response": "tx-response","ip_accept_any": true,"action": "respond","race": true},
-      {"rule_set": ["ChinaDomain"],"action": "route","server": "ali-udp","timeout": "3s"},
-      {"query_type": "HTTPS","action": "reject"},
-      {"domain_suffix": ["lancache.steamcontent.com","10099.com.cn","msftconnecttest.com","msftncsi.com","local","lan","home","internal","corp","example.com"],"server": "local"},
-      {"query_type": ["A","AAAA"],"action": "route","server": "remote","rewrite_ttl": 1}
+      {"rule_set": ["Reject"], "action": "predefined"},
+      {"clash_mode": "Direct", "action": "route", "server": "local"},
+      {"clash_mode": "Global", "action": "route", "server": "remote"},
+      {"rule_set": ["AppleCN"], "action": "route", "server": "ali-doh"},
+      {"type": "logical", "mode": "and", "rules": [{"clash_mode": "AllowAds", "invert": true}, {"rule_set": ["Reject", "Ads_AWAvenue"]}], "action": "reject"},
+      {"rule_set": ["ChinaDomain"], "query_type": ["A", "AAAA"], "action": "evaluate", "server": "ali-udp", "tag": "ali-response", "timeout": "3s"},
+      {"rule_set": ["ChinaDomain"], "query_type": ["A", "AAAA"], "action": "evaluate", "server": "tx-udp", "tag": "tx-response", "timeout": "3s"},
+      {"rule_set": ["ChinaDomain"], "query_type": ["A", "AAAA"], "match_response": "ali-response", "ip_accept_any": true, "action": "respond", "race": true},
+      {"rule_set": ["ChinaDomain"], "query_type": ["A", "AAAA"], "match_response": "tx-response", "ip_accept_any": true, "action": "respond", "race": true},
+      {"rule_set": ["ChinaDomain"], "action": "route", "server": "ali-udp", "timeout": "3s"},
+      {"query_type": "HTTPS", "action": "reject"},
+      {"domain_suffix": ["lancache.steamcontent.com", "10099.com.cn", "msftconnecttest.com", "msftncsi.com", "local", "lan", "home", "internal", "corp", "example.com"], "server": "local"},
+      {"query_type": ["A", "AAAA"], "action": "route", "server": "remote", "rewrite_ttl": 1}
     ],
     "optimistic": true,
     "strategy": "prefer_ipv4",
@@ -161,21 +164,21 @@
     "final": "Proxy",
     "rules": [
       {"action": "sniff"},
-      {"type": "logical","mode": "or","rules":[{"port":53},{"protocol": "dns"}],"action": "hijack-dns"},
-      {"clash_mode": "Direct","action": "route","outbound": "Direct"},
-      {"rule_set": ["AppleCN"],"action": "route","outbound": "Direct"},
-      {"type": "logical","mode": "and","rules": [{"clash_mode": "AllowAds","invert": true},{"rule_set": ["Reject","Ads_AWAvenue"]}],"action": "reject"},
-      {"rule_set": ["AI"],"action": "route","outbound": "AI"},
-      {"rule_set": ["Telegram"],"action": "route","outbound": "Telegram"},
-      {"rule_set": ["Twitter", "Facebook", "Github"],"action": "route","outbound": "X"},
-      {"rule_set": ["Google", "YouTube"],"action": "route","outbound": "Google"},
-      {"rule_set": ["ChinaDomain"],"action": "route","outbound": "Direct"},
-      {"rule_set": ["Proxy"],"action": "route","outbound": "Proxy"},
-      {"rule_set": ["AppleProxy"],"action": "route","outbound": "Proxy"},
-      {"rule_set": ["emby"],"action": "route","outbound": "emby"},
+      {"type": "logical", "mode": "or", "rules": [{"port": 53}, {"protocol": "dns"}], "action": "hijack-dns"},
+      {"clash_mode": "Direct", "action": "route", "outbound": "Direct"},
+      {"rule_set": ["AppleCN"], "action": "route", "outbound": "Direct"},
+      {"type": "logical", "mode": "and", "rules": [{"clash_mode": "AllowAds", "invert": true}, {"rule_set": ["Reject", "Ads_AWAvenue"]}], "action": "reject"},
+      {"rule_set": ["AI"], "action": "route", "outbound": "AI"},
+      {"rule_set": ["Telegram"], "action": "route", "outbound": "Telegram"},
+      {"rule_set": ["Twitter", "Facebook", "Github"], "action": "route", "outbound": "X"},
+      {"rule_set": ["Google", "YouTube"], "action": "route", "outbound": "Google"},
+      {"rule_set": ["ChinaDomain"], "action": "route", "outbound": "Direct"},
+      {"rule_set": ["Proxy"], "action": "route", "outbound": "Proxy"},
+      {"rule_set": ["AppleProxy"], "action": "route", "outbound": "Proxy"},
+      {"rule_set": ["emby"], "action": "route", "outbound": "emby"},
       {"action": "resolve"},
-      {"rule_set": ["ChinaIP"],"action": "route","outbound": "Direct"},
-      {"ip_is_private": true,"action": "route","outbound": "Direct"}
+      {"rule_set": ["ChinaIP"], "action": "route", "outbound": "Direct"},
+      {"ip_is_private": true, "action": "route", "outbound": "Direct"}
     ],
     "rule_set": [
       {
