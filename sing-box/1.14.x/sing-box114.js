@@ -40,18 +40,11 @@ const regionMap = {
 config.outbounds.forEach(i => {
   if (!Array.isArray(i.outbounds)) return;
 
-  // 全选(排除7个落地节点,其余节点全部保留)
+  // 全选(排除落地节点,其余节点全部保留)
   if (['all', 'all-auto'].includes(i.tag)) {
-    const excludeNames = new Set([
-      '凤凰城-中转落地',
-      '东京-中转落地',
-      '星岛-中转落地',
-      '春川-中转落地',
-      '韩国-中转落地',
-      '台湾-中转落地',
-      '香港-中转落地'
-    ]);
-    i.outbounds.push(...getTags(proxies.filter(p => !excludeNames.has(p.tag))));
+    const landingRegexes = Object.values(specialMap);
+    const kept = proxies.filter(p => !landingRegexes.some(r => r.test(p.tag)));
+    i.outbounds.push(...getTags(kept));
   }
 
   // 落地
