@@ -5,10 +5,10 @@
   },
   "experimental": {
     "clash_api": {
-      "external_controller": "127.0.0.1:9090",
+      "external_controller": "127.0.0.1:18181",
       "external_ui": "zashboard",
-      "secret": "singbox",
-      "external_ui_download_url": "https://gh-proxy.com/https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip",
+      "secret": "jscn.net",
+      "external_ui_download_url": "https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip",
       "external_ui_download_detour": "Direct",
       "default_mode": "Rule"
     },
@@ -22,12 +22,12 @@
     {
       "type": "api",
       "listen": "::",
-      "listen_port": 18181,
-      "secret": "singbox",
+      "listen_port": 18182,
+      "secret": "jscn.net",
       "dashboard": {
         "enabled": true,
         "path": "dashboard",
-        "download_url": "https://gh-proxy.com/https://github.com/SagerNet/sing-box-dashboard/archive/refs/heads/gh-pages.zip",
+        "download_url": "https://github.com/SagerNet/sing-box-dashboard/archive/refs/heads/gh-pages.zip",
         "http_client": "default",
         "update_interval": "1d"
       }
@@ -118,7 +118,7 @@
     {"tag": "🚀 🇹🇼 NODE", "type": "selector", "outbounds": ["台湾-落地", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "香港-落地", "♻️ AT", "📌 MT"], "default": "♻️ AT", "interrupt_exist_connections": true},
     {"tag": "🚀 🇭🇰 NODE", "type": "selector", "outbounds": ["香港-落地", "美国-落地", "日本-落地", "星岛-落地", "春川-落地", "韩国-落地", "台湾-落地", "♻️ AT", "📌 MT"], "default": "♻️ AT", "interrupt_exist_connections": true},
     {"tag": "🔰 other", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "🚀 🇺🇲 NODE", "interrupt_exist_connections": true},
-    {"tag": "emby", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "Proxy", "interrupt_exist_connections": true},
+    {"tag": "Emby", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "Proxy", "interrupt_exist_connections": true},
     {"tag": "Google", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "Proxy", "interrupt_exist_connections": true},
     {"tag": "Telegram", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "Proxy", "interrupt_exist_connections": true},
     {"tag": "AI", "type": "selector", "outbounds": ["Proxy", "🚀 🇺🇲 NODE", "🚀 🇯🇵 NODE", "🚀 🇸🇬 NODE", "🚀 chr NODE", "🚀 🇰🇷 NODE", "🚀 🇹🇼 NODE", "🚀 🇭🇰 NODE", "Direct"], "default": "Proxy", "interrupt_exist_connections": true},
@@ -170,12 +170,12 @@
       {"type": "logical", "mode": "and", "rules": [{"clash_mode": "AllowAds", "invert": true}, {"rule_set": ["Reject", "Ads_AWAvenue"]}], "action": "reject"},
       {"rule_set": ["AI"], "action": "route", "outbound": "AI"},
       {"rule_set": ["Telegram"], "action": "route", "outbound": "Telegram"},
-      {"rule_set": ["Twitter", "Facebook", "Github"], "action": "route", "outbound": "X"},
+      {"rule_set": ["Twitter", "Facebook", "Phone", "Github"], "action": "route", "outbound": "X"},
       {"rule_set": ["Google", "YouTube"], "action": "route", "outbound": "Google"},
       {"rule_set": ["ChinaDomain"], "action": "route", "outbound": "Direct"},
       {"rule_set": ["Proxy"], "action": "route", "outbound": "Proxy"},
       {"rule_set": ["AppleProxy"], "action": "route", "outbound": "Proxy"},
-      {"rule_set": ["emby"], "action": "route", "outbound": "emby"},
+      {"rule_set": ["Emby"], "action": "route", "outbound": "Emby"},
       {"action": "resolve"},
       {"rule_set": ["ChinaIP"], "action": "route", "outbound": "Direct"},
       {"ip_is_private": true, "action": "route", "outbound": "Direct"}
@@ -195,10 +195,17 @@
       },
       {
         "type": "remote",
-        "tag": "emby",
+        "tag": "Emby",
         "format": "source",
-        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/rule/main/sing-box/emby.json",
-        "update_interval": "24h"
+        "url": "https://raw.githubusercontent.com/jscntw/rule/main/sing-box/emby.json",
+        "update_interval": "2400h"
+      },
+	  {
+        "type": "remote",
+        "tag": "Phone",
+        "format": "source",
+        "url": "https://raw.githubusercontent.com/jscntw/rule/main/sing-box/phone.json",
+        "update_interval": "2400h"
       }
     ]
   }
