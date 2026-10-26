@@ -1,15 +1,30 @@
+
 {
   "version": 3,
   "rules": [
     {
       "domain_suffix": [
         ".misaka.be",
-        ".emby.yun",
+        ".inemby.us.ci",
         ".ichinosekotomi.com",
         ".okemby.org",
         ".cn2gias.uk",
         ".shrekmedia.org",
-        ".66990000.xyz"
+        ".ccwu.cc",
+        ".us.ci",
+        ".yusen.cyou",
+        ".cc.cd",
+        ".wybcs.work",
+        ".zzm.li",
+        ".eu.org",
+        ".dpdns.org",
+        ".qzz.io",
+        ".dylan.xin",
+        ".langhongtw.com",
+        ".lang.live",
+        ".nodeseek.com",
+        ".v2ex.com",
+        ".hostloc.com"
       ],
       "domain_keyword": [
         "lzcdn",
