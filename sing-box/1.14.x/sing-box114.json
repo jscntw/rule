@@ -197,14 +197,14 @@
         "type": "remote",
         "tag": "Emby",
         "format": "source",
-        "url": "https://raw.githubusercontent.com/jscntw/rule/main/sing-box/emby.json",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/rule/main/sing-box/emby.json",
         "update_interval": "2400h"
       },
 	  {
         "type": "remote",
         "tag": "Phone",
         "format": "source",
-        "url": "https://raw.githubusercontent.com/jscntw/rule/main/sing-box/phone.json",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/jscntw/rule/main/sing-box/phone.json",
         "update_interval": "2400h"
       }
     ]
