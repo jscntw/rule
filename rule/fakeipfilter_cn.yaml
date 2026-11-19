@@ -11,8 +11,6 @@ payload:
   - '*.home.arpa'
   - '*.direct'
   - PDC._msDCS.*
-  - '*.*DC._msDCS.*'
-  - '*.*GC._msDCS.*'
   - '*.router.asus.com'
 
   # NTP
