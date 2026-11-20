@@ -40,10 +40,6 @@ payload:
   - stun.*.*
   - stun.*.*.*
 
-  # 本地连接检测
-  - +.msftconnecttest.com
-  - +.msftncsi.com
-
   # Sony PlayStation STUN
   - +.stun.playstation.net
 
