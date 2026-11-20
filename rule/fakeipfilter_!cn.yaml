@@ -80,13 +80,6 @@ payload:
   - '*.linksys.com'
   - '*.linksyssmartwifi.com'
 
-  # Google
-  - lens.l.google.com
-  - stun.l.google.com
-  - na.b.g-tun.com
-  - '+.xn--ngstr-lra8j.com'
-  - '+.services.googleapis.cn'
-
   # Netflix
   - +.nflxvideo.net
 
